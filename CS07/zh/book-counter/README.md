@@ -20,6 +20,7 @@ A feladat célje, hogy görgetés során egy globális változóban tároljuk, h
   ```js
   entry.target.style.setProperty("--accent", accent); // vagy ahogy nevezed a dolgokat
   ```
+  - add hozzá az `seen` stílusosztályt az aktuális targethez
 
 \c (1.0 pont)
 
