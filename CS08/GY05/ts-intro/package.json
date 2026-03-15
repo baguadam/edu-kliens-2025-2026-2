@@ -1,0 +1,11 @@
+{
+  "name": "ts-project",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/index.js"
+  },
+  "dependencies": {
+    "typescript": "^5.9.3"
+  }
+}

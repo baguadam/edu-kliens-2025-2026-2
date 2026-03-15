@@ -3,7 +3,7 @@
     "target": "ES2020",
     "module": "commonjs", // module system
     "strict": true, // szigorú típusellenőrzés
-    "noEmitOnError": false, // hiba esetén NE hozza létre a JS-t
+    "noEmitOnError": true, // hiba esetén NE hozza létre a JS-t
     "outDir": "./dist" // a lefordított JS ide kerül
   },
   "include": ["*.ts"] // csak a projekt rootban szereplő .ts fájlokat fordítja
