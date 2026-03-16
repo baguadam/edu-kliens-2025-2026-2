@@ -28,7 +28,7 @@ Készíts egy Helló világ alkalmazást Reactben!
       id: number;
       name: string;
       age: number;
-      hasStarted: boolean;
+      hasStrava: boolean;
     }
     ```
 
