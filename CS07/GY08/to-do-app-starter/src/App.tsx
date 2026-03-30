@@ -8,9 +8,9 @@ import Statistics from "./components/Statistics";
 function App() {
   const [taskList, setTaskList] = useState(tasks);
 
-  // computed value
+  // computer values
   const taskCount = taskList.length;
-  const completedCount = taskList.filter((task) => task.completed).length;
+  const completedCount = taskList.filter((t) => t.completed).length;
 
   const handleRemoveClick = (id: number) => {
     setTaskList(taskList.filter((task) => task.id !== id));
@@ -27,7 +27,11 @@ function App() {
   return (
     <div className="container">
       <h1>📝 Tennivalók</h1>
-      <Statistics taskCount={taskCount} completedCount={completedCount} />
+
+      {taskCount > 0 && (
+        <Statistics taskCount={taskCount} completedCount={completedCount} />
+      )}
+
       <TaskList
         taskList={taskList}
         onRemoveClick={handleRemoveClick}

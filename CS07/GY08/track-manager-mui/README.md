@@ -1,21 +1,9 @@
-# TrackManager - MUI
+# TrackManager házi feladatok
 
-1. Jelenleg az `App.tsx`-en belül az `exampleTracks` tömb van megjelenítve. Tároljuk el a tömböt dinamikusan, használjuk a `useState`-et.
-2. Oldjuk meg, hogy amikor rákattintunk egy konkrét kártyára, az adott `track` indexe eltárolódjon, és a `TrackDetails` komponens megjelenjen, ahol a kiválasztott `track` részletes adatai láthatóak legyenek.
-3. Oldjuk meg, hogy a törlés gombra kattintva a kiválasztott `track` törlődjön a listából, és a `TrackDetails` komponens eltűnjön. Vigyázz a buborékolásra, hogy a törlés gomb kattintása ne aktiválja a kártya kattintási eseményét, ami a `TrackDetails` megjelenítéséért felelős.
-4. Okosítsuk fel a `TrackForm` komponenst, ehhez használjuk a `controlled form` megközelítést, ilyenkor minden input mező értékét egy `állapotban` tárolunk, minden változáskor frissítjük ezt az állapotot.
-5. Készítsünk egy `custom hook`-ot, ami egységbe zárja a form kezeléséhez szükséges logikát, így a `TrackForm` komponens tisztább és újrahasználhatóbb lesz.
-6. Ismerkedjünk meg a `useRef` hook-kal. Hozzunk létre egy `inputRef`-et a `TrackForm` komponensben, nézzük meg, hogyan tudjuk elérni a mező értékét a `useRef` segítségével, és hasonlítsuk össze a `controlled form` megközelítéssel.
-7. Ismerkedjünk meg a `useEffect` hook-kal. Oldjuk meg, hogy amikor a `TrackForm` komponens megjelenik, akkor a `inputRef`-el rendelkező mező automatikusan fókuszba kerüljön.
-
-```js
-      id: Date.now(),
-      title: formState.title,
-      artist: formState.artist,
-      length: "0:00",
-      rating: Number(formState.rating),
-      thumbnailURL: "",
-      spotifyURL: "",
-      chordsURL: "",
-      lyricsURL: "",
-```
+1. Jelenleg bár bekérjük a felhasználótól, hogy `isFavorite`-e a track, ez semmilyen formában nem jelenik meg a UI-on, illetve nem is része a `JSON`-nek. Egészítsd ki a `Track`-et úgy, hogy tartalmazza az `isFavorite` mezőt. Értelemszerűen oldd meg, hogy új track létrehozásakor ez is megfelelően eltárolódjon.
+2. Módosítsd a UI-t, hogy a kedvencnek jelölt kártyák vizuálisan is elkülönüljenek. Ezt megteheted akár valamilyen keret alkalmazásával is, de még jobb megoldás lenne egy `IconButton`-nel megjeleníteni (mondjuk egy kattintható valami). Ennek használatára látsz példát a `TrackCard` komponensben (`DeleteIcon`). [MUI IKONOK](https://mui.com/material-ui/material-icons/)
+3. Ha az előbbi megoldást választottad, oldd meg, hogy kattintással kedvencé lehessen tenni egy track-et, illetve ugyanígy vissza is lehessen venni a kedvencek közül. Ehhez bővítsd a `useTracks` hook-ot egy `toggleFavorite` függvénnyel, ami megkapja a track `id`-jét, és ennek megfelelően módosítja a `isFavorite` értékét a tömbben.
+4. Jelenleg új track hozzáadásakor a form mezői nem törlődnek, hanem megmaradnak a kitöltött értékekkel. Oldd meg, hogy amint sikeresen hozzáadtál egy tracket, a form álljon vissza az üres kezdeti állapotba. Ehhez a `useForm`-ban létre kell hoznod egy `resetForm` függvényt, ami visszaállítja a form állapotát az `initialState`-re, és ezt kell meghívnod az `addTrack` sikeres végrehajtása után.
+5. Jelenleg csak új track-ek létrehozására van lehetőség, de meglévőket nem lehet szerkeszteni. Több megközelítés lehet a feladat megoldására:
+   - Létrehozhatsz egy új `EditTrack` komponenst, ami hasonló a `CreateTrack`-hez, viszont megkapja a kiválasztott kártya adatait, és a form azokkal kitöltve jelenik meg. Értelemszerűen ehhez használhatod a `useForm`-ot, hiszen annyi a módosítás, hogy az `initialState`-ben nem egy üres kezdet állapotot adsz meg, hanem a kiválasztott track adatait. Szükséged lesz egy metódusra, amit majd `submit`-kor hívsz meg, hasonlóan az `addTrack`-hez, viszont ez nem új track-et hoz létre, hanem meglévőt módosít. Ehhez készíts egy `updateTrack` függvényt a `useTracks`-ban, ami megkapja a track `id`-jét és a módosított adatokat, majd ez alapján frissíti a track-et a tömbben.
+   - Egy másik megközelítés, hogy egységesíted a `TrackForm` komponenst, és ezt használod mind új track létrehozására, mind meglévő szerkesztésére. Ebben az esetben a `TrackForm`-nak meg kell kapnia egy opcionális `initialData` prop-ot, ami ha meg van adva, akkor azzal tölti ki a form mezőit, ha nincs, akkor üres állapotot használ. A `submit`-kor pedig eldöntöd, hogy új track-et hozol létre vagy meglévőt módosítasz az alapján, hogy van-e `initialData` vagy nincs.
