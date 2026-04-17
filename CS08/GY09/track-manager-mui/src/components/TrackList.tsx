@@ -4,15 +4,16 @@ import { TrackCard } from "./TrackCard";
 
 interface Props {
   tracks: Track[];
-  onSelect: (track: Track) => void;
+  onClick: (track: Track) => void;
+  onDelete: (id: string) => void;
 }
 
-export function TrackList({ tracks, onSelect }: Props) {
+export function TrackList({ tracks, onClick, onDelete }: Props) {
   return (
     <Grid container spacing={2}>
       {tracks.map((track) => (
         <Grid size={{ xs: 12, sm: 6, md: 4 }} key={track.id}>
-          <TrackCard track={track} onSelect={onSelect} />
+          <TrackCard track={track} onClick={onClick} onDelete={onDelete} />
         </Grid>
       ))}
     </Grid>

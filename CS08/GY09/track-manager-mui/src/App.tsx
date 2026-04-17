@@ -12,8 +12,9 @@ import {
 import { TrackList } from "./components/TrackList";
 import { TrackForm } from "./components/TrackForm";
 import { TrackDetails } from "./components/TrackDetails";
-import { exampleTracks, type Track } from "./data/track";
-import { useEffect, useState } from "react";
+import { type Track } from "./data/track";
+import { useState } from "react";
+import useTracks from "./hooks/useTracks";
 
 const panelSx: SxProps<Theme> = {
   p: { xs: 1.5, md: 2.5 },
@@ -24,21 +25,21 @@ const panelSx: SxProps<Theme> = {
 };
 
 function App() {
-  const [tracks, setTracks] = useState<Track[]>(exampleTracks);
-
-  useEffect(() => {
-    console.log(tracks);
-  }, [tracks]);
-
-  const addTrack = (track: Track) => {
-    setTracks([...tracks, track]);
-  };
-
+  const { tracks, addTrack, removeTrack } = useTracks();
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
 
   // handlers
-  const handleCardSelect = (track: Track) => {
+  const handleCardClick = (track: Track) => {
     setSelectedTrack(track);
+  };
+
+  const handleRemoveClick = (id: string) => {
+    // csak akkor vegyük le a "details" részt, ha a törlendő track az éppen megjelenített,
+    // tehát: van selectedTrack és annak az id-ja megegyezik a törlendővel
+    if (selectedTrack && selectedTrack.id === id) {
+      setSelectedTrack(null);
+    }
+    removeTrack(id);
   };
 
   return (
@@ -60,9 +61,6 @@ function App() {
         <Stack spacing={2.5}>
           <Box>
             <Typography variant="h4">Track Manager</Typography>
-            <Typography variant="body1" color="text.secondary">
-              Curate your playlist with a cleaner dark workspace.
-            </Typography>
           </Box>
 
           <Grid container spacing={2.5}>
@@ -71,7 +69,11 @@ function App() {
                 <Typography variant="h6" sx={{ mb: 1.5 }}>
                   Library
                 </Typography>
-                <TrackList tracks={tracks} onSelect={handleCardSelect} />
+                <TrackList
+                  tracks={tracks}
+                  onClick={handleCardClick}
+                  onDelete={handleRemoveClick}
+                />
               </Paper>
             </Grid>
 

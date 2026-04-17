@@ -7,13 +7,20 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import type { Track } from "../data/track";
+import { useContext } from "react";
+import { TrackContext } from "../contexts/TrackContext";
 
 interface Props {
   track: Track;
-  onSelect: (track: Track) => void;
+  onClick: (track: Track) => void;
+  onDelete: (id: string) => void;
 }
 
-export function TrackCard({ track, onSelect }: Props) {
+export function TrackCard({ track, onClick, onDelete }: Props) {
+  const trackData = useContext(TrackContext);
+
+  console.log(trackData);
+
   return (
     <Card
       sx={{
@@ -29,7 +36,7 @@ export function TrackCard({ track, onSelect }: Props) {
           borderColor: "rgba(94, 234, 212, 0.55)",
         },
       }}
-      onClick={() => onSelect(track)}
+      onClick={() => onClick(track)}
     >
       <CardMedia component="img" height="140" image={track.thumbnailURL} />
 
@@ -45,6 +52,10 @@ export function TrackCard({ track, onSelect }: Props) {
             justifySelf: "start",
             mt: 0.5,
             border: "1px solid rgba(239, 68, 68, 0.35)",
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(track.id);
           }}
         >
           <DeleteIcon />

@@ -3,42 +3,53 @@ import {
   Checkbox,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
   Stack,
   TextField,
 } from "@mui/material";
-import useForm, { type FormValues } from "../hooks/useForm";
-import type { Track } from "../data/track";
 import { v4 as uuidv4 } from "uuid";
-import { useEffect } from "react";
-
-const INITIAL_VALUES: FormValues = {
-  title: "ALMA",
-  artist: "",
-  genre: "rock",
-  rating: "4",
-  isFavorite: false,
-};
+import useForm from "../hooks/useForm";
+import type React from "react";
+import type { Track } from "../data/track";
+import { validateTrackForm } from "../utils/validators";
+import { useState } from "react";
 
 interface TrackFormProps {
   addTrack: (track: Track) => void;
 }
 
 export function TrackForm({ addTrack }: TrackFormProps) {
-  const { formState, handleInput, handleCheck, handleSelect } =
-    useForm(INITIAL_VALUES);
+  const { formState, handleInput, handleCheck } = useForm({
+    title: "",
+    artist: "",
+    genre: "rock",
+    rating: "3",
+    isFavorite: false,
+  });
+  const [hasError, setHasError] = useState(false);
+  const isFormValid = validateTrackForm(formState) !== null;
 
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
+
+    const validatedValues = validateTrackForm(formState);
+    if (!validatedValues) {
+      setHasError(true);
+      return;
+    }
+    setHasError(false);
+
     addTrack({
-      id: uuidv4(),
-      title: formState.title,
-      artist: formState.artist,
+      id: uuidv4(), // generáltatunk egy egyedi stringet ID-ként
+      title: validatedValues.title,
+      artist: validatedValues.artist,
       length: "0:00",
-      rating: Number(formState.rating),
-      thumbnailURL: "",
+      rating: validatedValues.rating,
+      thumbnailURL:
+        "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/classic-song-mixtape-album-cover-template-design-3ba3255137894fac49ae81b1346b289e_screen.jpg?ts=1635384548",
       spotifyURL: "",
       chordsURL: "",
       lyricsURL: "",
@@ -68,7 +79,7 @@ export function TrackForm({ addTrack }: TrackFormProps) {
             label="Genre"
             name="genre"
             value={formState.genre}
-            onChange={handleSelect}
+            onChange={handleInput}
           >
             <MenuItem value="rock">Rock</MenuItem>
             <MenuItem value="pop">Pop</MenuItem>
@@ -84,7 +95,7 @@ export function TrackForm({ addTrack }: TrackFormProps) {
             label="Rating"
             name="rating"
             value={formState.rating}
-            onChange={handleSelect}
+            onChange={handleInput}
           >
             <MenuItem value="1">1 / 5</MenuItem>
             <MenuItem value="2">2 / 5</MenuItem>
@@ -96,18 +107,18 @@ export function TrackForm({ addTrack }: TrackFormProps) {
 
         <FormControlLabel
           control={
-            <Checkbox
-              checked={formState.isFavorite}
-              name="isFavorite"
-              onChange={handleCheck}
-            />
+            <Checkbox checked={formState.isFavorite} onChange={handleCheck} />
           }
           label="Mark as favorite"
         />
 
-        <Button type="submit" variant="contained">
+        <Button type="submit" variant="contained" disabled={!isFormValid}>
           Add Track
         </Button>
+
+        {hasError && !isFormValid && (
+          <FormHelperText error>Invalid form data!</FormHelperText>
+        )}
       </Stack>
     </form>
   );

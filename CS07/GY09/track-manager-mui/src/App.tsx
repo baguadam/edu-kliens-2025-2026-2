@@ -8,12 +8,14 @@ import {
   Stack,
   type Theme,
   Typography,
+  Button,
 } from "@mui/material";
 import { TrackList } from "./components/TrackList";
 import { TrackForm } from "./components/TrackForm";
 import { TrackDetails } from "./components/TrackDetails";
-import { exampleTracks, type Track } from "./data/track";
-import { useEffect, useState } from "react";
+import { type Track } from "./data/track";
+import { useEffect, useRef, useState } from "react";
+import useTracks from "./hooks/useTracks";
 
 const panelSx: SxProps<Theme> = {
   p: { xs: 1.5, md: 2.5 },
@@ -24,21 +26,44 @@ const panelSx: SxProps<Theme> = {
 };
 
 function App() {
-  const [tracks, setTracks] = useState<Track[]>(exampleTracks);
+  const { tracks, addTrack, removeTrack } = useTracks();
+  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
+  const countRef = useRef(0);
+  const libraryRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    console.log(tracks);
-  }, [tracks]);
-
-  const addTrack = (track: Track) => {
-    setTracks([...tracks, track]);
+  const handleClick = () => {
+    countRef.current = countRef.current + 1;
+    console.log(countRef.current);
   };
 
-  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
+  // const [musicCount, setMusicCount] = useState(tracks.length);
+
+  const musicCount = tracks.length;
+
+  // useEffect(() => {
+  //   setMusicCount(tracks.length);
+  // }, [tracks]);
+
+  useEffect(() => {
+    document.title = selectedTrack ? selectedTrack.title : "Track Manager";
+  }, [selectedTrack]);
+
+  useEffect(() => {
+    libraryRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   // handlers
-  const handleCardSelect = (track: Track) => {
+  const handleCardClick = (track: Track) => {
     setSelectedTrack(track);
+  };
+
+  const handleRemoveClick = (id: string) => {
+    // csak akkor vegyük le a "details" részt, ha a törlendő track az éppen megjelenített,
+    // tehát: van selectedTrack és annak az id-ja megegyezik a törlendővel
+    if (selectedTrack && selectedTrack.id === id) {
+      setSelectedTrack(null);
+    }
+    removeTrack(id);
   };
 
   return (
@@ -60,18 +85,23 @@ function App() {
         <Stack spacing={2.5}>
           <Box>
             <Typography variant="h4">Track Manager</Typography>
-            <Typography variant="body1" color="text.secondary">
-              Curate your playlist with a cleaner dark workspace.
-            </Typography>
+            <Typography variant="h6">Track count: {musicCount}</Typography>
+            <Button variant="outlined" onClick={handleClick}>
+              Log Ref
+            </Button>
           </Box>
 
           <Grid container spacing={2.5}>
             <Grid size={{ xs: 12, lg: 8 }}>
-              <Paper elevation={0} sx={panelSx}>
+              <Paper elevation={0} sx={panelSx} ref={libraryRef}>
                 <Typography variant="h6" sx={{ mb: 1.5 }}>
                   Library
                 </Typography>
-                <TrackList tracks={tracks} onSelect={handleCardSelect} />
+                <TrackList
+                  tracks={tracks}
+                  onClick={handleCardClick}
+                  onDelete={handleRemoveClick}
+                />
               </Paper>
             </Grid>
 
