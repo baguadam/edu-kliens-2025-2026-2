@@ -5,6 +5,7 @@ interface TrackProviderProps {
   children: React.ReactNode;
 }
 
+// Wrapper komponens. Ide emeltük ki az adatot a useTracks custom hookból.
 const TrackProvider = ({ children }: TrackProviderProps) => {
   const trackData = useTracks();
   return (

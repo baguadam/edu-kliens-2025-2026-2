@@ -36,18 +36,27 @@ function App() {
     console.log(countRef.current);
   };
 
+  // **** HOGYAN NE CSINÁLD ****
+  // Az volt az első gondolatunk, hogy mivel a musicCount a tracks értékétől függ, illetve szeretnénk
+  // ezt az értéket megjeleníteni a UI-on is, így eltároljuk egy state-ben, majd pedig egy effectben, ami akkor
+  // fut le, ha a tracks változik, mindig beállítjuk aktuálisra:
+
   // const [musicCount, setMusicCount] = useState(tracks.length);
-
-  const musicCount = tracks.length;
-
   // useEffect(() => {
   //   setMusicCount(tracks.length);
   // }, [tracks]);
 
+  // Viszont láttuk már korábban, hogy erre semmi szükség, fölösleges rendereket generálunk csak vele,
+  // hiszen a tracks már alapból egy state-ben van, a musicCount pedig csak egy ebből származtatott érték,
+  // amit elég minden újraszámolni.
+  const musicCount = tracks.length;
+
+  // effect, lefut, ha a selectedTrack értéke változik
   useEffect(() => {
     document.title = selectedTrack ? selectedTrack.title : "Track Manager";
   }, [selectedTrack]);
 
+  // effect, lefut, amikor a komponens mountol
   useEffect(() => {
     libraryRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);

@@ -10,6 +10,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
+      {/* Provider, innen lesz elérhető a Context */}
       <TrackProvider>
         <App />
       </TrackProvider>

@@ -1,11 +1,17 @@
 import { Card, CardContent, Chip, Stack, Typography } from "@mui/material";
 import type { Track } from "../data/track";
+import { useContext } from "react";
+import UserContext from "../contexts/UserContext";
+import TrackContext from "../contexts/TrackContext";
 
 interface Props {
   track: Track;
 }
 
 export function TrackDetails({ track }: Props) {
+  const tracks = useContext(TrackContext);
+  console.log(tracks);
+
   return (
     <Card
       elevation={0}
