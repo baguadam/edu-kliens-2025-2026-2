@@ -1,0 +1,159 @@
+import {
+  Box,
+  Container,
+  Divider,
+  Grid,
+  Paper,
+  type SxProps,
+  Stack,
+  type Theme,
+  Typography,
+  Button,
+} from "@mui/material";
+import { TrackList } from "./components/TrackList";
+import { TrackForm } from "./components/TrackForm";
+import { TrackDetails } from "./components/TrackDetails";
+import { type Track } from "./data/track";
+import { useEffect, useRef, useState } from "react";
+import useTracks from "./hooks/useTracks";
+import useUser from "./hooks/useUser";
+import RequireAuth from "./components/auth/RequireAuth";
+
+const panelSx: SxProps<Theme> = {
+  p: { xs: 1.5, md: 2.5 },
+  border: "1px solid",
+  borderColor: "rgba(148, 163, 184, 0.2)",
+  backgroundColor: "rgba(17, 24, 39, 0.8)",
+  backdropFilter: "blur(8px)",
+};
+
+function App() {
+  const { tracks, addTrack, removeTrack } = useTracks();
+  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
+  const countRef = useRef(0);
+  const libraryRef = useRef<HTMLDivElement | null>(null);
+  const { user, login, logout } = useUser();
+
+  const handleClick = () => {
+    countRef.current = countRef.current + 1;
+    console.log(countRef.current);
+  };
+
+  // **** HOGYAN NE CSINÁLD ****
+  // Az volt az első gondolatunk, hogy mivel a musicCount a tracks értékétől függ, illetve szeretnénk
+  // ezt az értéket megjeleníteni a UI-on is, így eltároljuk egy state-ben, majd pedig egy effectben, ami akkor
+  // fut le, ha a tracks változik, mindig beállítjuk aktuálisra:
+
+  // const [musicCount, setMusicCount] = useState(tracks.length);
+  // useEffect(() => {
+  //   setMusicCount(tracks.length);
+  // }, [tracks]);
+
+  // Viszont láttuk már korábban, hogy erre semmi szükség, fölösleges rendereket generálunk csak vele,
+  // hiszen a tracks már alapból egy state-ben van, a musicCount pedig csak egy ebből származtatott érték,
+  // amit elég minden újraszámolni.
+  const musicCount = tracks.length;
+
+  // effect, lefut, ha a selectedTrack értéke változik
+  useEffect(() => {
+    document.title = selectedTrack ? selectedTrack.title : "Track Manager";
+  }, [selectedTrack]);
+
+  // effect, lefut, amikor a komponens mountol
+  useEffect(() => {
+    libraryRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  // handlers
+  const handleCardClick = (track: Track) => {
+    setSelectedTrack(track);
+  };
+
+  const handleRemoveClick = (id: string) => {
+    // csak akkor vegyük le a "details" részt, ha a törlendő track az éppen megjelenített,
+    // tehát: van selectedTrack és annak az id-ja megegyezik a törlendővel
+    if (selectedTrack && selectedTrack.id === id) {
+      setSelectedTrack(null);
+    }
+    removeTrack(id);
+  };
+
+  return (
+    <Box
+      sx={{
+        minHeight: "100dvh",
+        background:
+          "radial-gradient(circle at 5% 5%, rgba(94, 234, 212, 0.15), transparent 35%), radial-gradient(circle at 95% 0%, rgba(245, 158, 11, 0.15), transparent 30%), #070b14",
+        py: { xs: 2.5, md: 4 },
+      }}
+    >
+      <Container
+        maxWidth={false}
+        disableGutters
+        sx={{
+          px: { xs: 1.5, sm: 2, md: 3, lg: 4 },
+        }}
+      >
+        <Stack spacing={2.5}>
+          <Box>
+            <Typography variant="h4">Track Manager</Typography>
+            <Typography variant="h6">Track count: {musicCount}</Typography>
+            {user ? (
+              <Button variant="outlined" onClick={logout}>
+                Logout
+              </Button>
+            ) : (
+              <Button
+                variant="outlined"
+                onClick={() => login({ name: "Sanyi", token: "asd" })}
+              >
+                Login
+              </Button>
+            )}
+          </Box>
+
+          <Grid container spacing={2.5}>
+            <Grid size={{ xs: 12, lg: 8 }}>
+              <Paper elevation={0} sx={panelSx} ref={libraryRef}>
+                <Typography variant="h6" sx={{ mb: 1.5 }}>
+                  Library
+                </Typography>
+                <TrackList
+                  tracks={tracks}
+                  onClick={handleCardClick}
+                  onDelete={handleRemoveClick}
+                />
+              </Paper>
+            </Grid>
+
+            <Grid size={{ xs: 12, lg: 4 }}>
+              <Stack spacing={2.5}>
+                {selectedTrack && (
+                  <Paper elevation={0} sx={panelSx}>
+                    <Typography variant="h6" sx={{ mb: 1.5 }}>
+                      Track Details
+                    </Typography>
+                    <TrackDetails track={selectedTrack} />
+                  </Paper>
+                )}
+
+                <Divider sx={{ borderColor: "rgba(148, 163, 184, 0.2)" }} />
+
+                <RequireAuth>
+                  <Paper elevation={0} sx={panelSx}>
+                    <Typography variant="h6" sx={{ mb: 1.5 }}>
+                      Add New Track
+                    </Typography>
+                    <TrackForm addTrack={addTrack} />
+                  </Paper>
+                </RequireAuth>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Stack>
+      </Container>
+    </Box>
+  );
+}
+
+export default App;
