@@ -9,4 +9,6 @@ interface TrackContextType {
 }
 
 // context létrehozása, kezdetben null értékkel, majd később érkezik az érték a Provideren keresztül
-export const TrackContext = createContext<TrackContextType | null>(null);
+export const TrackContext = createContext<TrackContextType | undefined>(
+  undefined,
+);

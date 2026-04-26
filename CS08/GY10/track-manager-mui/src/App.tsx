@@ -16,6 +16,8 @@ import { TrackDetails } from "./components/TrackDetails";
 import { type Track } from "./data/track";
 import { useEffect, useRef, useState } from "react";
 import useTracks from "./hooks/useTracks";
+import useUser from "./hooks/useUser";
+import RequireAuth from "./components/Auth/RequireAuth";
 
 const panelSx: SxProps<Theme> = {
   p: { xs: 1.5, md: 2.5 },
@@ -30,6 +32,9 @@ function App() {
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const countRef = useRef(0);
   const libraryRef = useRef<HTMLDivElement | null>(null);
+
+  // const userData = useContext(UserContext);
+  const { user, login, logout } = useUser();
 
   const handleClick = () => {
     countRef.current = countRef.current + 1;
@@ -95,9 +100,18 @@ function App() {
           <Box>
             <Typography variant="h4">Track Manager</Typography>
             <Typography variant="h6">Track count: {musicCount}</Typography>
-            <Button variant="outlined" onClick={handleClick}>
-              Log Ref
-            </Button>
+            {user ? (
+              <Button variant="outlined" onClick={logout}>
+                Logout
+              </Button>
+            ) : (
+              <Button
+                variant="outlined"
+                onClick={() => login({ name: "Kristóf", token: "orvos" })}
+              >
+                Login
+              </Button>
+            )}
           </Box>
 
           <Grid container spacing={2.5}>
@@ -127,12 +141,16 @@ function App() {
 
                 <Divider sx={{ borderColor: "rgba(148, 163, 184, 0.2)" }} />
 
-                <Paper elevation={0} sx={panelSx}>
-                  <Typography variant="h6" sx={{ mb: 1.5 }}>
-                    Add New Track
-                  </Typography>
-                  <TrackForm addTrack={addTrack} />
-                </Paper>
+                <RequireAuth
+                  fallback={<Typography variant="h6">You must be logged in!</Typography>}
+                >
+                  <Paper elevation={0} sx={panelSx}>
+                    <Typography variant="h6" sx={{ mb: 1.5 }}>
+                      Add New Track
+                    </Typography>
+                    <TrackForm addTrack={addTrack} />
+                  </Paper>
+                </RequireAuth>
               </Stack>
             </Grid>
           </Grid>

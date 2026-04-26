@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { appTheme } from "./theme";
 import TrackProvider from "./contexts/TrackProvider.tsx";
+import UserProvider from "./contexts/UserProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -12,7 +13,9 @@ createRoot(document.getElementById("root")!).render(
       <CssBaseline />
       {/* Provider, innen lesz elérhető a Context */}
       <TrackProvider>
-        <App />
+        <UserProvider>
+          <App />
+        </UserProvider>
       </TrackProvider>
     </ThemeProvider>
   </StrictMode>,

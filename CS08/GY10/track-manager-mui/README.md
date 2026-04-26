@@ -11,7 +11,7 @@ Készítsünk egy demo authentikációt az alkalmazásunkban. Ehhez használjuk 
 Hozzunk létre egy `useUserState` custom hook-ot, amiben az alábbiakat valósítjuk meg:
 
 - `user` state, ami egy objektumot tárol a felhasználó adataival (`name`, `token`), kezdetben `null` értékkel.
-- `login` függvény, ami egy `User` objektumot kap paraméterként és frissíti a `user` state-et.
+- `login` függvény, ami egy `User` objektumot kap paramé@terként és frissíti a `user` state-et.
 - `logout` függvény, ami törli a `user` state-et, azaz visszaállítja `null`-ra.
 
 ## UserContext

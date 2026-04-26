@@ -13,10 +13,6 @@ import { store } from "./state/store";
 
 store.subscribe(() => console.log(store.getState()));
 store.dispatch({
-  type: "INCREMENT_COUNT",
-  payload: 2,
-});
-store.dispatch({
-  type: "MODIFY_NAME",
-  payload: "Sanyi",
+  type: "CHANGE_EDITOR",
+  payload: "valami",
 });
