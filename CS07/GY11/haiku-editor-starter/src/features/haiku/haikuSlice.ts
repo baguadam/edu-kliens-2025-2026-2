@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { RootState } from "../../state/store";
 
 export interface InitialState {
   editor: string;
@@ -38,9 +39,9 @@ export const { changeEditorSlice, addHaikuSlice, changeIndex } =
   haikuSlice.actions;
 
 // selector
-export const selectEditor = (state: InitialState) => state.editor;
-export const selectHaikus = (state: InitialState) => state.haikus;
-export const selectIndex = (state: InitialState) => state.selectedIndex;
+export const selectEditor = (state: RootState) => state.haiku.editor;
+export const selectHaikus = (state: RootState) => state.haiku.haikus;
+export const selectIndex = (state: RootState) => state.haiku.selectedIndex;
 
 // reducer
 export default haikuSlice.reducer;

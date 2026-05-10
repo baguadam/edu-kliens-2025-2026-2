@@ -1,11 +1,17 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "./authSlice";
+import { useNavigate } from "react-router";
 
 export default function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.SubmitEvent) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -13,6 +19,10 @@ export default function LoginForm() {
       setError("Minden mező kitöltése kötelező.");
       return;
     }
+
+    // success
+    dispatch(login({ user: email, token: password }));
+    navigate("/");
   };
 
   return (

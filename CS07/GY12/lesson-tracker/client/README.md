@@ -113,19 +113,3 @@ export default function RequireAuth({ children }: RequireAuthProps) {
   return token ? children : <Navigate to="/login" replace />;
 }
 ```
-
-# RTK Query
-
-Az [RTK dokumentáció](https://redux-toolkit.js.org/rtk-query/overview) alapján konfiguráljuk a szükséges dolgokat. Használjuk a már bekészített típusokat, amik a `types.ts`-ben vannak definiálva!
-
-1. Hozzunk létre egy `getStudent` endpointot, ami lekéri az összes rendelkezésre álló diákot a szerverről!
-2. Hozzuk létre a `login` endpointot, ami a szervernek elküldi a megadott emailt és jelszót. Ez értelemszerűen egy `mutation` lesz. Ha ez elkészült, kössük ezt be a `LoginForm`-ba, és a sikeres login esetén állítsuk be a user értékét a visszakapott adatokra!
-
-Az adatbázisban létezik a következő felhasználó:
-
-```JSON
-{
-  "email": "teacher@example.com",
-  "password": "teacher",
-}
-```
