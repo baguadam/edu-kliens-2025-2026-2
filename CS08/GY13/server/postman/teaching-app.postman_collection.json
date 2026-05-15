@@ -1,0 +1,424 @@
+{
+  "info": {
+    "_postman_id": "2f5a6f6f-7b4d-4a94-9db3-4c18f2bfe5e0",
+    "name": "Teaching App API",
+    "description": "Postman collection for the teaching app server routes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teacher@example.com\",\n  \"password\": \"almafa\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Logs in a teacher and stores the returned JWT token in the collection variable `token`."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json.token) {",
+                  "    pm.collectionVariables.set('token', json.token);",
+                  "  }",
+                  "} catch (err) {",
+                  "  console.log('Response is not JSON or token was not present.');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Teacher\",\n  \"email\": \"alice@example.com\",\n  \"password\": \"almafa\",\n  \"passwordAgain\": \"almafa\",\n  \"subjects\": [\"Matematika\", \"Fizika\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Registers a new teacher and stores the returned JWT token in the collection variable `token`."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json.token) {",
+                  "    pm.collectionVariables.set('token', json.token);",
+                  "  }",
+                  "} catch (err) {",
+                  "  console.log('Response is not JSON or token was not present.');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Returns the authenticated teacher payload."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "Public Students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/public/students",
+              "host": ["{{baseUrl}}"],
+              "path": ["public", "students"]
+            },
+            "description": "Returns all students in the database without authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "Public Demo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/public/demo",
+              "host": ["{{baseUrl}}"],
+              "path": ["public", "demo"]
+            },
+            "description": "Returns a public demo response without authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "List My Students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/students",
+              "host": ["{{baseUrl}}"],
+              "path": ["students"]
+            },
+            "description": "Returns the students belonging to the authenticated teacher."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Student By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/student/{{studentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["student", "{{studentId}}"]
+            },
+            "description": "Returns one student owned by the authenticated teacher."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Student Lessons",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/student/{{studentId}}/lessons",
+              "host": ["{{baseUrl}}"],
+              "path": ["student", "{{studentId}}", "lessons"]
+            },
+            "description": "Returns the lessons assigned to a student owned by the authenticated teacher."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Lesson",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/student/{{studentId}}/lesson/{{lessonId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["student", "{{studentId}}", "lesson", "{{lessonId}}"]
+            },
+            "description": "Returns a single lesson belonging to the given student and authenticated teacher."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bob Student\",\n  \"price\": 5000,\n  \"subject\": \"Matematika\",\n  \"lessonDates\": [\"MON\", \"WED\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/student",
+              "host": ["{{baseUrl}}"],
+              "path": ["student"]
+            },
+            "description": "Creates a student for the authenticated teacher. TeacherId is taken from the JWT."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bob Student\",\n  \"price\": 5500,\n  \"subject\": \"Matematika\",\n  \"lessonDates\": [\"MON\", \"FRI\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/student/{{studentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["student", "{{studentId}}"]
+            },
+            "description": "Updates a student owned by the authenticated teacher."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Student",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/student/{{studentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["student", "{{studentId}}"]
+            },
+            "description": "Deletes a student owned by the authenticated teacher."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Teachers",
+      "item": [
+        {
+          "name": "Update Teacher",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Teacher\",\n  \"email\": \"alice@example.com\",\n  \"subjects\": [\"Matematika\", \"Informatika\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/teacher/{{teacherId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["teacher", "{{teacherId}}"]
+            },
+            "description": "Updates the authenticated teacher. The path id must match the token id."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Teacher",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/teacher/{{teacherId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["teacher", "{{teacherId}}"]
+            },
+            "description": "Deletes the authenticated teacher. The path id must match the token id."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3030"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "teacherId",
+      "value": "1"
+    },
+    {
+      "key": "studentId",
+      "value": "1"
+    },
+    {
+      "key": "lessonId",
+      "value": "1"
+    }
+  ]
+}

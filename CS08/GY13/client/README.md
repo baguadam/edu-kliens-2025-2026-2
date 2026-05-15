@@ -113,4 +113,3 @@ export default function RequireAuth({ children }: RequireAuthProps) {
   return token ? children : <Navigate to="/login" replace />;
 }
 ```
-

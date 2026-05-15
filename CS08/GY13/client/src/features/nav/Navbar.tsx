@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router";
-import { logout, selectUser } from "../auth/authSlice";
+import { logout, selectToken } from "../auth/authSlice";
 
 export default function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector(selectUser);
+  const token = useSelector(selectToken);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -14,7 +14,6 @@ export default function Navbar() {
 
   return (
     <nav className="bg-blue-600 text-white px-6 py-3 flex justify-between items-center">
-      {user ?? <p>Üdv, {user}</p>}
       <div className="flex gap-4 items-center">
         <NavLink
           to="/students"
@@ -36,7 +35,7 @@ export default function Navbar() {
         >
           Új diák hozzáadása
         </NavLink>
-        {!user && (
+        {!token && (
           <NavLink
             to="/login"
             className={({ isActive }) =>

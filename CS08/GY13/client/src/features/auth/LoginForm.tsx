@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "./authSlice";
 import { useNavigate } from "react-router";
-import { useLoginMutation } from "../api/api";
 
 export default function LoginForm() {
   const [email, setEmail] = useState<string>("");
@@ -11,9 +10,8 @@ export default function LoginForm() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loginUser, response] = useLoginMutation();
 
-  const handleSubmit = async (e: React.SubmitEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -23,8 +21,7 @@ export default function LoginForm() {
     }
 
     // success
-    const { token } = await loginUser({ email, password }).unwrap();
-    dispatch(login({ user: email, token }));
+    dispatch(login({ user: email, token: password }));
     navigate("/");
   };
 
@@ -75,7 +72,6 @@ export default function LoginForm() {
         <button
           type="submit"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded"
-          disabled={response.isLoading}
         >
           Bejelentkezés
         </button>

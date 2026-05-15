@@ -38,7 +38,3 @@ export interface StudentReturnData {
   message: string;
   student: Student;
 }
-
-export interface TokenObject {
-  token: string;
-}
