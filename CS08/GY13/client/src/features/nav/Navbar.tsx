@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router";
-import { logout, selectToken } from "../auth/authSlice";
+import { logout, selectToken, selectUser } from "../auth/authSlice";
 
 export default function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = useSelector(selectToken);
+  const user = useSelector(selectUser);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -14,6 +15,7 @@ export default function Navbar() {
 
   return (
     <nav className="bg-blue-600 text-white px-6 py-3 flex justify-between items-center">
+      {user ?? <p>Üdv, {user}</p>}
       <div className="flex gap-4 items-center">
         <NavLink
           to="/students"

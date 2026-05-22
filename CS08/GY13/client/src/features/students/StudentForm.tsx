@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { useAddStudentMutation } from "../api/api";
+import { selectToken } from "../auth/authSlice";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 
 export default function StudentForm() {
   const [name, setName] = useState("");
@@ -6,11 +10,32 @@ export default function StudentForm() {
   const [price, setPrice] = useState(0);
   const [lessonDates, setLessonDates] = useState("");
 
+  const token = useSelector(selectToken);
+  const navigate = useNavigate();
+  const [addStudent, response] = useAddStudentMutation();
   const isLoading = false;
 
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
-    // lessonDates: lessonDates.split(",").map((d) => d.trim()),
+
+    // validation
+
+    // if ok:
+    const student = {
+      name,
+      subject,
+      price,
+      lessonDates: lessonDates.split(",").map((d) => d.trim()),
+    };
+
+    const result = await addStudent({
+      student,
+      token: token!,
+    }).unwrap();
+
+    console.log(result);
+
+    navigate("/students");
   };
 
   return (

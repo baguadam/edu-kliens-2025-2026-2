@@ -27,6 +27,11 @@ export interface User {
   password: string;
 }
 
+export interface AddStudentType {
+  message: string;
+  student?: Student;
+}
+
 export interface CreateStudentData {
   name: string;
   price: number;
